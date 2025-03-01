@@ -23,11 +23,21 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+
+          {% if role == "admin" %}
           <li>
-          {% if user %}
-          <p>hello admin</p>
+          <p>hello {{current_user.email}} (Admin) </p>
+            </li>
+          {% elif role == "specialist" %}
+          <li>
+          <p>hello {{current_user.email}} (specialist)</p>
+            </li>
+          {% elif logged_in %}
+          <li>
+          <p>hello {{current_user.email}} (user)</p>
             </li>
           {% endif %}
+
            <li class="nav-item">
             <a class="nav-link active" href="#">Home</a>
           </li>
@@ -37,7 +47,8 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
           </li>
-          {% if specialist == 'yes' %}
+
+          {% if role == 'specialist' %}
           <li class="nav-item">
             <a class="nav-link" href="#">Contact admin</a>
           </li>
@@ -48,6 +59,7 @@
             <a class="nav-link" href="{{ url_for('logout') }}">LogOut</a>
           </li>
           {% endif %}
+
         </ul>
       </div>
     </div>

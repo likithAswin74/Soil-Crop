@@ -30,6 +30,9 @@ def admin_only(function):
         # If id is not 1 then return abort with 403 error
         if current_user.id != 1:
             return abort(403)
+        # if the current user is not from the AdminUser table
+        if not isinstance(current_user, AdminUser):
+            return abort(403)
         # Otherwise continue with the route function
         return function(*args, **kwargs)
     return decorated_function
@@ -48,7 +51,34 @@ login_manager.init_app(app)
 # Create a user_loader callback
 @login_manager.user_loader
 def load_user(user_id):
-    return db.get_or_404(Users, user_id)
+    composite_id = session.get("user_id")
+    print(f"Loading user with ID: {composite_id}")
+
+    if composite_id.startswith("user_"):
+
+        user_id = int(composite_id.split("_")[1])  # Extract the numeric ID
+        user = db.get_or_404(Users, user_id)
+        if user:
+            print(f"Found user in Users table: {user}")
+            return user
+
+    elif composite_id.startswith("specialist_"):
+        user_id = int(composite_id.split("_")[1])  # Extract the numeric ID
+        user = db.get_or_404(Specialist, user_id)
+        if user:
+            print(f"Found user in Specialist table: {user}")
+            return user
+
+    elif composite_id.startswith("admin_"):
+        print("no")
+        user_id = int(composite_id.split("_")[1])  # Extract the numeric ID
+        user = db.get_or_404(AdminUser, user_id)
+        if user:
+            print(f"Found user in AdminUser table: {user}")
+            return user
+
+    print("User not found in any table")
+    return None
     # it checks the user id in the session and that userid is present in the database.
 # For every subsequent request, Flask-Login calls the user_loader function to load the user object associated with the user_id stored in the session.
 # The load_user function retrieves the User from the database based on the stored user_id. This allows you to access the current user in the request using current_user.
@@ -89,6 +119,7 @@ class Specialist(UserMixin, db.Model):
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(100))
+    specialization: Mapped[str] = mapped_column(String(100))
 
 
 # creating the tables in the database
@@ -104,10 +135,11 @@ admin = Admin(app, name='Agro Care', template_mode='bootstrap3')  # admin obj fo
 class AdminModelView(ModelView):
     @admin_only
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.id == 1
-    # this function returns true if the current_user is authenticated and current_user id is 1 else it returns false
-    # if it is true then it shows the admin panel with the database eg: MyRestaurant Home Items.
-    # if it is false then it shows the admin panel without the database. MyRestaurant Home.
+
+        return current_user.is_authenticated and current_user.id == 1 and isinstance(current_user, AdminUser)
+    # this function returns true if the current_user is authenticated and current_user id is 1 and isinstance is true. else it returns false
+    # if it is true then it shows the admin panel with the database eg: Agro Care Home users.
+    # if it is false then it shows the admin panel without the database. Agro Care Home.
 
 
 # This creates a new administrative interface for the User model. The first parameter, User, is the model you want to manage. The second parameter, db.session, is the SQLAlchemy session used for database transactions.
@@ -117,24 +149,29 @@ admin.add_view(AdminModelView(Users, db.session))  # this calls the functions in
 
 @app.route("/")
 def landingpage():
-    return render_template("landingpage.html")
+    # if the user is not authenticated then show the login and register page
+    if not current_user.is_authenticated:
+        return render_template("landingpage.html")
+    # if the user is authenticated then the login and register page should not be shown
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route("/home")
 def home():
+
     # only allows the user when he is logged in.
     if not current_user.is_authenticated:
         flash("First Log in and try again!")
         return redirect(url_for("landingpage"))
 
-    user = request.args.get("user")
-    # if the user is an admin then this route will be executed and it passes that it is admin. (user=user)
-    if user == "admin":
-        return render_template("index.html", user=user, logged_in=current_user.is_authenticated)
-    # else the user is a specialist or a normal user. so the user contains either true or false
-    # if it is false then it is a user . if it is true then it is specialist. these things can be done in base.html.
-    else:
-        return render_template("index.html", specialist=user, logged_in=current_user.is_authenticated)
+    role = request.args.get("role")
+
+    return render_template("index.html", role=role, logged_in=current_user.is_authenticated)
+    # things happening in base.html
+    # if the user == "admin" then we need to display the admin name
+    # if the  user == "specialist" then we need to display the admin name and also contact admin
+    # if both are false then the logged in user is a normal user.
 
 
 @app.route("/register", methods=['POST'])
@@ -143,7 +180,7 @@ def register():
     if request.method == "POST":
         # to clarify the logged in user is a specialist or a normal user. by default setting as false
         # if it remains false then the logged in user is a normal user else he is a specialist
-        specialist = "no"
+        role = "user"
 
         # checking that the email is already exists. if it is then we need to send the flash message and redirect page to login
         email = request.form.get("email")
@@ -156,9 +193,12 @@ def register():
         # Find user and specialist by email entered.
         if form_name and form_name == "user":
             email_in_database = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+            user_id = f"user_{email_in_database.id}"  # Composite ID for user
+
         else:  # check for specialist
             email_in_database = db.session.execute(db.select(Specialist).where(Specialist.email == email)).scalar()
-            specialist = "yes"
+            user_id = f"specialist_{email_in_database.id}"  # Composite ID for specialist
+            role = "specialist"
 
         # check if email exists
         if email_in_database:
@@ -172,7 +212,7 @@ def register():
                                                  salt_length=8)
 
         # entering the new user to the database
-        if specialist == "no":
+        if role == "user":
             new_user = Users(
                 email=email,
                 password=hashed_password,
@@ -183,10 +223,16 @@ def register():
             # Log in and authenticate user after adding details to database.
             login_user(new_user)  # Logs in a user by saving their ID in the session.
 
+            # storing the composite user_id in the session to ensure which user is login in . user or admin or specialist
+            # eg: user_1 or specilaist_1 or admin_1.the user_id looks like this.
+            # it can be taken by the loaduser callback and takes the id form the table of the logged in user.
+            session["user_id"] = user_id
+
         else:
             new_user = Specialist(
                 email=email,
                 password=hashed_password,
+                specialization=request.form.get("specialization"),
                 name=name
             )
             db.session.add(new_user)
@@ -195,7 +241,12 @@ def register():
             # Log in and authenticate user after adding details to database.
             login_user(new_user)  # Logs in a user by saving their ID in the session.
 
-        return redirect(url_for("home", user=specialist))
+            # storing the composite user_id in the session to ensure which user is login in . user or admin or specialist
+            # eg: user_1 or specilaist_1 or admin_1.the user_id looks like this.
+            # it can be taken by the loaduser callback and takes the id form the table of the logged in user.
+            session["user_id"] = user_id
+
+        return redirect(url_for("home", role=role))
 
 
 @app.route("/login", methods=['POST'])
@@ -204,8 +255,7 @@ def login():
     if request.method == "POST":
         # to clarify the logged in user is a specialist or a normal user. by default setting as false
         # if it remains false then the logged in user is a normal user else he is a specialist
-        specialist = "no"
-        adminuser = None
+        role = "user"
 
         email = request.form.get("email")
         password = request.form.get("password")
@@ -214,15 +264,26 @@ def login():
 
         # finds the user and admin by email entered
         if form_name and form_name == "admin":
+            print("yes")
             # checking that the user is exist, who tries to login
             user = db.session.execute(db.select(AdminUser).where(AdminUser.email == email)).scalar()
-            adminuser = "admin"
+            role = "admin"
+
+            user_id = f"admin_{user.id}"  # Composite ID for admin
         else:
             # checking that the logging user is a specialist or a normal user
-            user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
-            if not user:
+            # if the radio button tells it is the user. then get the user details from the User table
+            if request.form.get("role") == "user":
+                user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+                if user:
+                    user_id = f"user_{user.id}"  # Composite ID for user
+
+            # else the user is a specialist so getting the specialist data from the database
+            else:
                 user = db.session.execute(db.select(Specialist).where(Specialist.email == email)).scalar()
-                specialist = "yes"
+                if user:
+                    role = "specialist"
+                    user_id = f"specialist_{user.id}"  # Composite ID for specialist
 
 
         # if the user is not present then send a flash message with that route
@@ -237,11 +298,15 @@ def login():
 
             # if the email and password are entered correctly
         else:
+            print("yes")
             login_user(user)  # Logs in a user by saving their ID in the session.
-            if adminuser == "admin":  # if it is admin then pass admin else pass specialist or user.
-                return redirect(url_for('home', user=adminuser))
-            else:
-                return redirect(url_for('home', user=specialist))
+
+            # storing the composite user_id in the session to ensure which user is login in . user or admin or specialist
+            # eg: user_1 or specilaist_1 or admin_1.the user_id looks like this.
+            # it can be taken by the loaduser callback and takes the id form the table of the logged in user.
+            session["user_id"] = user_id
+
+            return redirect(url_for('home', role=role))
 
 
 @app.route('/logout')

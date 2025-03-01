@@ -87,14 +87,26 @@
                         <form method="POST" action="{{ url_for('login', form_name='user') }}">
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email">
+                                <input type="email" class="form-control" name="email" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password">
+                                <input type="password" class="form-control" name="password" required>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Login as User</button>
+                            <div class="mb-3">
+                                <label class="form-label">Login as:</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role" value="user" id="userRole" required>
+                                    <label class="form-check-label" for="userRole">User</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role" value="specialist" id="specialistRole" required>
+                                    <label class="form-check-label" for="specialistRole">Specialist</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Login</button>
                         </form>
+
                     </div>
                     <div class="tab-pane fade" id="admin-login" role="tabpanel">
                         <form method="POST" action="{{ url_for('login', form_name='admin') }}">
