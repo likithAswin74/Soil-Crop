@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="py-5 bg-light mt-5">
+  <div class="container">
+    <h2 class="text-center text-warning mb-4">Distributors</h2>
+    <div class="row">
+      {% for distributor in distributors %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ distributor.distributor_name }}</h5>
+            <p class="card-text">{{ distributor.location }}</p>
+            <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#details-{{ distributor.id }}">
+              View Details
+            </button>
+
+            <!-- Collapsible Table -->
+            <div id="details-{{ distributor.id }}" class="collapse mt-3">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Name</th>
+                  <td>{{ distributor.distributor_name }}</td>
+                </tr>
+                <tr>
+                  <th>specialization</th>
+                  <td>{{ distributor.name }}</td>
+                </tr>
+                <tr>
+                  <th>Location</th>
+                  <td>{{ distributor.location }}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{{ distributor.address }}</td>
+                </tr>
+                <tr>
+                  <th>Contact Number</th>
+                  <td>{{ distributor.number }}</td>
+                </tr>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}

@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+
   <!-- Navbar -->
   <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-forest-green fixed-top">
     <div class="container">
@@ -22,24 +24,24 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto align-items-center">
 
           {% if role == "admin" %}
-          <li>
-          <p>hello {{current_user.email}} (Admin) </p>
-            </li>
+          <li class="nav-item">
+            <span class="navbar-text me-3 text-white fw-bold">Hello, {{ current_user.name }} (Admin)</span>
+          </li>
           {% elif role == "specialist" %}
-          <li>
-          <p>hello {{current_user.email}} (specialist)</p>
-            </li>
+          <li class="nav-item">
+            <span class="navbar-text me-3 text-white fw-bold">Hello, {{ current_user.name }} (Specialist)</span>
+          </li>
           {% elif logged_in %}
-          <li>
-          <p>hello {{current_user.email}} (user)</p>
-            </li>
+          <li class="nav-item">
+            <span class="navbar-text me-3 text-white fw-bold">Hello, {{ current_user.name }}</span>
+          </li>
           {% endif %}
 
            <li class="nav-item">
-            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link active" href="{{ url_for('home', role=role) }}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
@@ -50,7 +52,7 @@
 
           {% if role == 'specialist' %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact admin</a>
+            <a class="nav-link" href="{{ url_for('contact_admin') }}">Contact admin</a>
           </li>
           {% endif %}
 
@@ -65,12 +67,18 @@
     </div>
   </nav>
 
+
+
   {% block content %} {% endblock %}
+
+
 
   <!-- Scroll-to-Top Button -->
   <button id="scrollToTopBtn" class="btn btn-primary rounded-circle" title="Go to top">
     <i class="bi bi-arrow-up"></i>
   </button>
+
+
 
   <!-- Footer -->
   <footer class="text-center text-white" style="background-color: #228B22">
@@ -79,7 +87,7 @@
         <div class="row text-center d-flex justify-content-center pt-3">
           <div class="col-md-2">
             <h6 class="text-uppercase font-weight-bold">
-              <a href="#" class="text-white">Home</a>
+              <a href="{{ url_for('home', role=role) }}" class="text-white">Home</a>
             </h6>
           </div>
           <div class="col-md-2">

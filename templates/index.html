@@ -1,92 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <!-- Hero Section -->
+<!-- Hero Section -->
 <header class="hero-section text-white text-center d-flex align-items-center justify-content-center vh-100 w-100"
         style="background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzlzOGI1bzFreWk2bHExa2EzY2twdmtuZm5naW15bWt6YWQ4eXczaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/s5DIPhvqysYOE5h0xH/giphy.gif') center/cover no-repeat; background-attachment: fixed;">
   <div class="container">
     <h1 class="display-4">Welcome to AgroGrowth Hub</h1>
     <p class="lead">Your trusted partner in sustainable agriculture and soil health.</p>
-    <a href="#" class="btn btn-custom btn-lg">Learn More</a>
+    <a href="#crop" class="btn btn-custom btn-lg">Learn More</a>
   </div>
 </header>
 
-
-  <!-- Content Section -->
-  <section class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <h3 class="text-earthy-brown">Soil Health</h3>
-          <p class="text-olive-green">Learn how to maintain and improve soil health for better crop yields.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-forest-green">Sustainable Farming</h3>
-          <p class="text-dark-green">Discover eco-friendly farming practices for a greener future.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-rust-orange">Harvest Tips</h3>
-          <p class="text-golden-yellow">Get expert tips on maximizing your harvest season.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<section class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <h3 class="text-earthy-brown">Soil Health</h3>
-          <p class="text-olive-green">Learn how to maintain and improve soil health for better crop yields.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-forest-green">Sustainable Farming</h3>
-          <p class="text-dark-green">Discover eco-friendly farming practices for a greener future.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-rust-orange">Harvest Tips</h3>
-          <p class="text-golden-yellow">Get expert tips on maximizing your harvest season.</p>
+<!-- Types of Crops Section -->
+<section id="crop" class="py-5">
+  <div class="container">
+    <h2 class="text-center text-success mb-4">Types of Crops</h2>
+    <div class="row">
+      <!-- Crop Card -->
+      {% for crop in crops %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+          <img src="{{ crop.image }}" class="card-img-top" alt="{{ crop.name }}">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ crop.name }}</h5>
+            <p class="card-text">{{ crop.description }}</p>
+            <a href="{{ url_for('details', type='crop', name=crop.name) }}" class="btn btn-success">Details</a>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-  </section>
+  </div>
+</section>
 
-<section class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <h3 class="text-earthy-brown">Soil Health</h3>
-          <p class="text-olive-green">Learn how to maintain and improve soil health for better crop yields.</p>
+<!-- Types of Soil Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center text-primary mb-4">Types of Soil</h2>
+    <div class="row">
+      <!-- Soil Card -->
+    <div class="row">
+      {% for soil in soils %}
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm h-100"> <!-- Add h-100 to make cards equal height -->
+            <img src="{{ soil.image }}" class="card-img-top fixed-height-img" alt="{{ soil.name }}"> <!-- Add fixed-height-img class -->
+            <div class="card-body text-center d-flex flex-column"> <!-- Use flexbox for card body -->
+              <h5 class="card-title">{{ soil.name }}</h5>
+              <p class="card-text">{{ soil.description }}</p>
+              <a href="{{ url_for('details', name=soil.name) }}" class="btn custom-btn mt-auto">Details</a> <!-- Use mt-auto to push button to bottom -->
+            </div>
+          </div>
         </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-forest-green">Sustainable Farming</h3>
-          <p class="text-dark-green">Discover eco-friendly farming practices for a greener future.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-rust-orange">Harvest Tips</h3>
-          <p class="text-golden-yellow">Get expert tips on maximizing your harvest season.</p>
-        </div>
-      </div>
+      {% endfor %}
     </div>
-  </section>
+    </div>
+  </div>
+</section>
 
-<section class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <h3 class="text-earthy-brown">Soil Health</h3>
-          <p class="text-olive-green">Learn how to maintain and improve soil health for better crop yields.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-forest-green">Sustainable Farming</h3>
-          <p class="text-dark-green">Discover eco-friendly farming practices for a greener future.</p>
-        </div>
-        <div class="col-md-4 text-center">
-          <h3 class="text-rust-orange">Harvest Tips</h3>
-          <p class="text-golden-yellow">Get expert tips on maximizing your harvest season.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<script>
+  document.querySelector('.btn-custom').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('#crop').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
 
 {% endblock %}

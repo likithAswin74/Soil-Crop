@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h2 class="text-center mb-4">Contact Admin</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Toggle Buttons -->
+    <div class="text-center mb-4">
+        <button class="btn btn-success" onclick="showForm('soilForm')">Soil Details</button>
+        <button class="btn custom-btn" onclick="showForm('cropForm')">Crop Details</button>
+    </div>
+
+    <!-- Soil Form -->
+    <div id="soilForm" class="form-container">
+        <h4 class="text-center">Soil Details</h4>
+        <form action="{{ url_for('contact_admin', form_name='soil') }}" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Distributor Name</label>
+                <input type="text" name="distributor_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Soil Name</label>
+                <input type="text" name="soil_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nutrients</label>
+                <input type="text" name="nutrients" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Best Suited Crops</label>
+                <input type="text" name="best_suited_crops" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Image Url</label>
+                <input type="text" name="image" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">location</label>
+                <input type="text" name="location" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">address</label>
+                <input type="text" name="address" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">contact number</label>
+                <input type="text" name="number" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Soil Details</button>
+        </form>
+    </div>
+
+    <!-- Crop Form -->
+    <div id="cropForm" class="form-container" style="display: none;">
+        <h4 class="text-center">Crop Details</h4>
+        <form action="{{ url_for('contact_admin', form_name='crop') }}" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Distributor Name</label>
+                <input type="text" name="distributor_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Crop Name</label>
+                <input type="text" name="crop_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Soil Type</label>
+                <input type="text" name="soil_type" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Growing Season</label>
+                <input type="text" name="growing_season" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Image Url</label>
+                <input type="text" name="image" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">location</label>
+                <input type="text" name="location" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">address</label>
+                <input type="text" name="address" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">contact number</label>
+                <input type="text" name="number" class="form-control" required>
+            </div>
+            <button type="submit" class="btn custom-btn">Submit Crop Details</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showForm(formId) {
+        document.getElementById('soilForm').style.display = (formId === 'soilForm') ? 'block' : 'none';
+        document.getElementById('cropForm').style.display = (formId === 'cropForm') ? 'block' : 'none';
+    }
+</script>
+
+
+
+{% endblock %}

@@ -86,23 +86,22 @@ html {
 
 /* Scroll-to-Top Button */
 #scrollToTopBtn {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 99;
-  font-size: 18px;
-  padding: 10px 15px;
-  background-color: #228B22;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
+    background-color: #f2d349 !important;  /* Button background color */
+    border: none;  /* Remove default border */
+    color: white; /* Icon color (optional) */
+    width: 50px; /* Adjust size */
+    height: 50px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none; /* Hide initially */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
 }
 
 #scrollToTopBtn:hover {
-  opacity: 0.8;
+    background-color: #e6c236; /* Slightly darker shade on hover */
 }
 /* Tilt Animation */
 @keyframes tilt {
@@ -216,4 +215,40 @@ html {
 }
 .footer-icon {
   will-change: transform;
+}
+
+
+
+
+
+
+
+
+
+/* Ensure all images have the same height */
+.fixed-height-img {
+  height: 200px; /* Adjust this value as needed */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  width: 100%; /* Ensures the image takes up the full width of the card */
+}
+
+/* Ensure all cards have the same height */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body {
+  flex: 1; /* Allows the card body to grow and fill the available space */
+}
+
+
+
+.custom-btn {
+    background-color: #f2d349 !important;
+    color: black !important;
+    border: none;
+}
+.custom-btn:hover {
+    background-color: #e6c236 !important;
 }
