@@ -497,5 +497,26 @@ def details():
         return render_template('details.html', role=role, distributors=details_db, logged_in=current_user.is_authenticated)
 
 
+@app.route("/about")
+def about():
+    # if the user is not authenticated then show the login and register page
+    if not current_user.is_authenticated:
+        return render_template("landingpage.html")
+
+    # if the user is authenticated then the login and register page should not be shown.
+    # role is used in base.html
+    # contact_admin page rendered. if the user is authenticated then we have current_user. so check current_user with isinstance
+    else:
+        role = None
+        # role is used to show contact_admin for specialist in the index.html. and show the admin name if the role is admin
+        # so it is not used for any thing except this one.
+        if isinstance(current_user, Specialist):
+            role = "specialist"
+        if isinstance(current_user, AdminUser):
+            role = "admin"
+
+    return render_template('about.html', role=role, logged_in=current_user.is_authenticated)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

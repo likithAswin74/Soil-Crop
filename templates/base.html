@@ -44,10 +44,7 @@
             <a class="nav-link active" href="{{ url_for('home', role=role) }}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
+            <a class="nav-link" href="{{ url_for('about') }}">About</a>
           </li>
 
           {% if role == 'specialist' %}
@@ -68,9 +65,7 @@
   </nav>
 
 
-
   {% block content %} {% endblock %}
-
 
 
   <!-- Scroll-to-Top Button -->
@@ -92,24 +87,14 @@
           </div>
           <div class="col-md-2">
             <h6 class="text-uppercase font-weight-bold">
-              <a href="#about" class="text-white">About</a>
+              <a href="{{ url_for('about') }}" class="text-white">About</a>
             </h6>
           </div>
-          <div class="col-md-2">
-            <h6 class="text-uppercase font-weight-bold">
-              <a href="#services" class="text-white">Services</a>
-            </h6>
-          </div>
-          <div class="col-md-2">
-            <h6 class="text-uppercase font-weight-bold">
-              <a href="#contact" class="text-white">Contact</a>
-            </h6>
-          </div>
+
         </div>
       </section>
 
       <hr class="my-4" />
-
       <section class="mb-4">
         <div class="row d-flex justify-content-center">
           <div class="col-lg-8">
