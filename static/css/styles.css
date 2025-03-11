@@ -244,21 +244,25 @@ html {
 
 
 
-.custom-btn {
-    background-color: #f2d349 !important;
-    color: black !important;
+
+/* Crop Details Button (Green) */
+.crop-btn {
+    background-color: #28a745 !important;  /* Green */
+    color: white !important;
+    width: 100%;
     border: none;
 }
-.custom-btn:hover {
-    background-color: #e6c236 !important;
+.crop-btn:hover {
+    background-color: #218838 !important;  /* Darker Green */
 }
 
-
-.custom-btn-for-crop {
-    background-color: green !important;
+/* Soil Details Button (Yellow) */
+.soil-btn {
+    background-color: #f2d349 !important;  /* Yellow */
     color: black !important;
+    width: 100%;
     border: none;
 }
-.custom-btn-for-crop:hover {
-    background-color: #e6c236 !important;
+.soil-btn:hover {
+    background-color: #e6c236 !important;  /* Darker Yellow */
 }
