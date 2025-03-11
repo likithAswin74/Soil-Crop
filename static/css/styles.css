@@ -269,3 +269,15 @@ html {
 
 
 
+.text-yellow {
+    color: #f2d349 !important; /* Yellow color */
+}
+
+.yellow-btn {
+    background-color: #f2d349 !important;  /* Yellow */
+    color: black !important;
+    border: none;
+}
+.yellow-btn:hover {
+    background-color: #e6c236 !important;  /* Darker Yellow */
+}
