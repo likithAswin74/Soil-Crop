@@ -252,3 +252,13 @@ html {
 .custom-btn:hover {
     background-color: #e6c236 !important;
 }
+
+
+.custom-btn-for-crop {
+    background-color: green !important;
+    color: black !important;
+    border: none;
+}
+.custom-btn-for-crop:hover {
+    background-color: #e6c236 !important;
+}

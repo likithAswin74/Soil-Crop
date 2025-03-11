@@ -20,7 +20,7 @@
       {% for crop in crops %}
       <div class="col-md-4 mb-4">
         <div class="card shadow-sm">
-          <img src="{{ crop.image }}" class="card-img-top" alt="{{ crop.name }}">
+          <img src="{{ crop.image }}" class="card-img-top fixed-height-img" alt="{{ crop.name }}">
           <div class="card-body text-center">
             <h5 class="card-title">{{ crop.name }}</h5>
             <p class="card-text">{{ crop.description }}</p>
